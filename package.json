@@ -1,0 +1,45 @@
+{
+  "name": "task_management_backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "lint:check": "eslint --ignore-path .eslintignore --ext .js .",
+    "lint:fix": "eslint . --fix",
+    "prettier:check": "prettier --ignore-path .gitignore --check \"**/*.+(js,json)\"",
+    "prettier:fix": "prettier --write \"**/*.+(js,json)\"",
+    "lint-prettier": "npm run lint:check && npm run prettier:check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "lint-staged": {
+    "src/**/*.js": "npm run lint-prettier"
+  },
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.12.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.4.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "http-status": "^2.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.4",
+    "nodemailer": "^6.10.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  }
+}
