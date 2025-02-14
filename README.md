@@ -1,3 +1,12 @@
+## Summary
+
+- **Backend Logic:** Node.js and Express.js
+- **Database:** MySQL
+
+## Important Note
+
+> **Note:** The `.env` file and database script are attached with the email. Please ensure you have them before running the project.
+
 ## Getting Started
 
 First, clone or dowload this project:
@@ -40,7 +49,5 @@ npm start
 
 Open [http://localhost:5000](http://localhost:5000) with your browser to see the result.
 
-## Important Note
 
-> **Note:** The `.env` file and database script are attached with the email. Please ensure you have them before running the project.
 
