@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
 const { combine, timestamp, label, printf /* prettyPrint */ } = format;
@@ -53,4 +54,4 @@ const errorlogger = createLogger({
   ],
 });
 
-export { logger, errorlogger };
+//export { logger, errorlogger };

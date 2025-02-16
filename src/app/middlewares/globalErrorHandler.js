@@ -3,12 +3,11 @@ import config from '../../config/index.js';
 import ApiError from '../../errors/ApiError.js';
 import handelValidationError from '../../errors/handelValidationError.js';
 import handleCastError from '../../errors/handleCastError.js';
-import { errorlogger } from '../../shared/logger.js';
 
 const globalErrorHandler = (error, req, res, next) => {
 	/* config.env === 'development'
     ? console.log('globalErrorHandler ', error)
-    : errorlogger.error('globalErrorHandler ', error); */
+    : errorconsole.log('globalErrorHandler ', error); */
 	const endpoint = req.originalUrl; // Capture the API endpoint
 	const user_id = req?.user?.userId; // Capture the API endpoint
 	const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -17,7 +16,7 @@ const globalErrorHandler = (error, req, res, next) => {
 		? console.error(
 				`globalErrorHandler Api End Point:${endpoint} IP:${clientIp} ${user_id ? `User ID:${user_id}` : ''} ${error}`
 			)
-		: errorlogger.error(
+		: errorconsole.log(
 				`globalErrorHandler Api End Point:${endpoint} IP:${clientIp} ${user_id ? `User ID:${user_id}` : ''} ${error}`
 			);
 
