@@ -13,6 +13,7 @@ export default {
 	bycrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
 	email_user: process.env.EMAIL_USER,
 	email_password: process.env.EMAIL_PASS,
+	client_url: process.env.CLIENT_URL,
 	jwt: {
 		secret: process.env.JWT_SECRET,
 		expires_in: process.env.JWT_EXPIRES_IN,

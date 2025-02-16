@@ -84,9 +84,11 @@ const createTask = async (userId, payload ) => {
 		const { title, description, due_date } = payload;
 
 
+		const formattedDueDate = new Date(due_date).toISOString().slice(0, 19).replace("T", " ");
+
 		const [insertTask] = await conn.query(
 			'INSERT INTO tasks (user_id, title, description, due_date, status) VALUES (?, ?, ?, ?, ?)',
-			[userId, title, description, due_date, 1] 
+			[userId, title, description, formattedDueDate, 1]
 		);
 
 		return insertTask.insertId; // Return the inserted task ID
@@ -104,9 +106,11 @@ const updateTask = async (userId, taskId, payload) => {
 	try {
 		const { title, description, due_date, status } = payload;
 
+		const formattedDueDate = new Date(due_date).toISOString().slice(0, 19).replace("T", " ");
+
 		const [updateTask] = await conn.query(
 			"UPDATE tasks SET title = ?, description = ?, due_date = ?, status = ? WHERE id = ? AND user_id = ?",
-			[title, description, due_date, status, taskId, userId]
+			[title, description, formattedDueDate, status, taskId, userId]
 		);
 
 		if (updateTask.affectedRows === 0) {

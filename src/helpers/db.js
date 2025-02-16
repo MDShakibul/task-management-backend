@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import config from '../config/index.js';
-import { logger } from '../shared/logger.js';
+/* import { logger } from '../shared/logger.js'; */
 
 let pool;
 
@@ -41,7 +41,7 @@ export async function closeDatabasePool() {
 			console.log('Error while closing database pool:', error);
 		}
 	} else {
-		logger.warn('No database pool to close');
+		console.log('No database pool to close');
 	}
 }
 

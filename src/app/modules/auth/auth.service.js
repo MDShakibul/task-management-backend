@@ -346,7 +346,7 @@ const forgotPassword = async (phone_number) => {
 	  );
 	  
 		// Send email with reset link
-		const resetLink = `http://localhost:3000/users/reset-password/${resetToken}`;
+		const resetLink = `${config?.client_url}/users/reset-password/${resetToken}`;
 		const mailOptions = {
 		  to: phone_number,
 		  subject: "Password Reset Request",
