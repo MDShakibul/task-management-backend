@@ -32,6 +32,7 @@ npm start
 
 ### Authentication & User Management Endpoints:
 - Register a new user: [http://localhost:5000/api/v1/auth/register](http://localhost:5000/api/v1/auth/register) (POST)
+- Verify a new user: [http://localhost:5000/api/v1/auth/signup-verify-otp](http://localhost:5000/api/v1/auth/signup-verify-otp) (POST)
 - Authenticate a user and return a token: [http://localhost:5000/api/v1/auth/login](http://localhost:5000/api/v1/auth/login) (POST)
 - Retrieve the authenticated user's profile: [http://localhost:5000/api/v1/auth/profile](http://localhost:5000/api/v1/auth/profile) (GET)
 - Update the authenticated user's profile: [http://localhost:5000/api/v1/auth/profile](http://localhost:5000/api/v1/auth/profile) (PUT)

@@ -10,6 +10,7 @@ import { taskFilterableFields } from './task.constant.js';
 const tasks = catchAsync(async (req, res) => {
 	const userid = req?.user?.userId;
 
+
     const filters = pick(req.query, taskFilterableFields);
     const paginationOptions = pick(req.query, paginationFields);
 	const result = await TasksService.tasks(userid, filters, paginationOptions);
@@ -55,7 +56,8 @@ const updateTask = catchAsync(async (req, res) => {
 	const taskId = req.params.id;
 	const { ...taskInfo } = req.body;
 
-	const result = await TasksService.updateTask(userId, taskId, taskInfo);
+
+	const result = await TasksService.updateTask(userId, taskId, taskInfo?.data);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
@@ -68,6 +70,7 @@ const updateTask = catchAsync(async (req, res) => {
 const deleteTask = catchAsync(async (req, res) => {
 	const userId = req.user.userId;
 	const taskId = req.params.id;
+
 
 	const result = await TasksService.deleteTask(userId, taskId);
 

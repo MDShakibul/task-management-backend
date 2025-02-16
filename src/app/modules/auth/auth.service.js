@@ -10,7 +10,7 @@ import { utils } from '../../../helpers/utils.js';
 const createUser = async (payload) => {
 	const conn = await getConnection();
 	try {
-		const { phone_number, password } = payload;
+		const { name, phone_number, password } = payload;
 
 		if (!phone_number) {
 			throw new ApiError(400, 'Mobile Number cannot be empty');
@@ -20,7 +20,7 @@ const createUser = async (payload) => {
 		}
 
 		// Generate OTP based on environment
-		const expairedOtpTime = 300;
+		const expairedOtpTime = 3600;
 		const otp =
 			config.env === 'development' ? 12345 : utils.generateRandom5DigitNumber();
 		const otpMessage = `Your verification code is ${otp}`;
@@ -67,8 +67,8 @@ const createUser = async (payload) => {
 			);
 		} else {
 			const [insertUserOtpTable] = await conn.query(
-				'INSERT INTO users_otp (user_phone, otp_code) VALUES (?, ?)',
-				[phone_number, otp]
+				'INSERT INTO users_otp (name, user_phone, otp_code) VALUES (?, ?, ?)',
+				[name, phone_number, otp]
 			);
 		}
 
@@ -76,6 +76,7 @@ const createUser = async (payload) => {
 		return {
 			phone_number,
 			password,
+			name,
 			otp_expaired_time: expairedOtpTime,
 		};
 	} catch (error) {
@@ -91,7 +92,7 @@ const createUser = async (payload) => {
 const signUpVerifyOtp = async (payload) => {
 	const conn = await getConnection();
 	try {
-		const { phone_number, password, otp } = payload;
+		const { phone_number, password, name, otp } = payload;
 
 		if (!otp) {
 			throw new ApiError(400, 'Please Enter OTP');
@@ -125,13 +126,13 @@ const signUpVerifyOtp = async (payload) => {
 		const role = 2;
 		if (isEmail) {
 			query =
-				'INSERT INTO users (email, password, verify_yn, role) VALUES (?, ?, ?, ?)';
-			params = [phone_number, hash_password, 1, role];
+				'INSERT INTO users (name, email, password, verify_yn, role) VALUES (?, ?, ?, ?, ?)';
+			params = [name, phone_number, hash_password, 1, role];
 		} else {
 			// Check if input is a phone number
 			query =
-				'INSERT INTO users (phone, password, verify_yn, role) VALUES (?, ?, ?, ?)';
-			params = [phone_number, hash_password, 1, role];
+				'INSERT INTO users (name, phone, password, verify_yn, role) VALUES (?, ?, ?, ?, ?)';
+			params = [name, phone_number, hash_password, 1, role];
 		}
 
 		const [insertUserAndGetId] = await conn.query(query, params);
@@ -263,7 +264,7 @@ const userProfile = async (userId) => {
 			[userId]
 		);
 
-		return getUserDetails;
+		return getUserDetails[0];
 	} catch (error) {
 		throw new ApiError(400, error.message || 'An error occurred');
 	} finally {
@@ -277,11 +278,11 @@ const userProfile = async (userId) => {
 const userUpadteProfile = async (userId, userInfo) => {
 	const conn = await getConnection();
 	try {
-		const { name, phone, email } = userInfo;
+		const { name, email } = userInfo;
 		// Check if the user already exists
 		const [userTableExists] = await conn.query(
-			'SELECT COUNT(*) AS user_exists, id FROM users WHERE phone = ? OR email = ?',
-			[phone, email]
+			'SELECT COUNT(*) AS user_exists, id FROM users WHERE email = ?',
+			[ email]
 		);
 
 		const userExists = userTableExists[0]?.user_exists > 0; // Boolean check
@@ -293,8 +294,8 @@ const userUpadteProfile = async (userId, userInfo) => {
 		}
 
 		const [getUserDetails] = await conn.query(
-			'UPDATE users SET name = ?, phone = ?, email = ? WHERE id = ?',
-			[name, phone, email, userId]
+			'UPDATE users SET name = ?, email = ? WHERE id = ?',
+			[name, email, userId]
 		);
 
 		return getUserDetails;
@@ -309,13 +310,13 @@ const userUpadteProfile = async (userId, userInfo) => {
 };
 
 
-const forgotPassword = async (email) => {
+const forgotPassword = async (phone_number) => {
 	const conn = await getConnection();
 	try {
 		// Check if the user already exists
 		const [userTableExists] = await conn.query(
 			'SELECT COUNT(*) AS user_exists, id FROM users WHERE email = ?',
-			[email]
+			[phone_number]
 		);
 
 		const userExists = userTableExists[0]?.user_exists <= 0; // Boolean check
@@ -327,17 +328,20 @@ const forgotPassword = async (email) => {
 		}
 
 		const resetToken = utils?.generateResetToken();
-  		const tokenExpiration = Date.now() + 3600000; // 1-hour expiration
-
-		const [updateUserTable] = await conn.query(
-			'UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?',
-			[resetToken, tokenExpiration, email]
-		);
-
+		const tokenExpiration = new Date(Date.now() + 3600000) 
+		.toISOString()
+		.slice(0, 19)
+		.replace("T", " ");
+	  
+	  const [updateUserTable] = await conn.query(
+		"UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?",
+		[resetToken, tokenExpiration, phone_number]
+	  );
+	  
 		// Send email with reset link
-		const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+		const resetLink = `http://localhost:3000/users/reset-password/${resetToken}`;
 		const mailOptions = {
-		  to: email,
+		  to: phone_number,
 		  subject: "Password Reset Request",
 		  html: `<p>Click <a href="${resetLink}">${resetLink}</a> to reset your password.</p>`,
 		};
@@ -349,21 +353,20 @@ const forgotPassword = async (email) => {
 	} catch (error) {
 		throw new ApiError(400, error.message || 'An error occurred');
 	} finally {
-		// Properly release the connection back to the pool
 		if (conn) {
 			conn.release();
 		}
 	}
 };
 
-const resetPassword = async (token, newPassword) => {
+const resetPassword = async (token, new_password) => {
 	const conn = await getConnection();
 	try {
-	  // Check if the token exists and is not expired
 	  const [users] = await conn.query(
-		"SELECT id, email FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()",
-		[token]
+		"SELECT id, email FROM users WHERE reset_token = ? AND reset_token_expiry > ?",
+		[token, Date.now()]
 	  );
+	  
   
 	  if (users.length === 0) {
 		throw new ApiError(400, "Invalid or expired token");
@@ -371,7 +374,7 @@ const resetPassword = async (token, newPassword) => {
   
 	  const userId = users[0].id;
 	  const hashedPassword = await bcrypt.hash(
-		newPassword,
+		new_password,
 		Number(config.bycrypt_salt_rounds)
 	);
   

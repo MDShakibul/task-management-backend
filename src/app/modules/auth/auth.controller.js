@@ -10,6 +10,7 @@ const createUser = catchAsync(async (req, res) => {
 
 	const result = await AuthService.createUser(userInfo);
 
+
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
 		success: true,
@@ -20,6 +21,7 @@ const createUser = catchAsync(async (req, res) => {
 
 const signUpVerifyOtp = catchAsync(async (req, res) => {
 	const { ...userInfo } = req.body;
+
 	const result = await AuthService.signUpVerifyOtp(userInfo);
 
 	const { refreshToken, ...others } = result;
@@ -40,6 +42,7 @@ const signUpVerifyOtp = catchAsync(async (req, res) => {
 
 const loginUser = catchAsync(async (req, res) => {
 	const { ...loginData } = req.body;
+
 
 	const result = await AuthService.loginUser(loginData);
 	const { refreshToken, ...others } = result;
@@ -77,6 +80,7 @@ const userUpadteProfile = catchAsync(async (req, res) => {
 	const userid = req?.user?.userId;
 	const { ...userInfo } = req.body;
 
+
 	const result = await AuthService.userUpadteProfile(userid, userInfo);
 
 	sendResponse(res, {
@@ -88,9 +92,9 @@ const userUpadteProfile = catchAsync(async (req, res) => {
 });
 
 const forgotPassword = catchAsync(async (req, res) => {
-	const { email } = req.body;
+	const { phone_number } = req.body;
 
-	const result = await AuthService.forgotPassword(email);
+	const result = await AuthService.forgotPassword(phone_number);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
@@ -101,8 +105,9 @@ const forgotPassword = catchAsync(async (req, res) => {
 });
 const resetPassword = catchAsync(async (req, res) => {
 	const { token } = req.params;
-	const { newPassword } = req.body;
-	const result = await AuthService.resetPassword(token, newPassword);
+	const { new_password } = req.body;
+
+	const result = await AuthService.resetPassword(token, new_password);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
