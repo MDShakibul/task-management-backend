@@ -56,6 +56,13 @@ const createUser = async (payload) => {
 		}
 
 		/* TODO: Send otp here via email or sms */
+		const mailOptions = {
+			to: phone_number,
+			subject: "OTP from Taks Manager",
+			html: `<p>Your OTP is ${otp}</p>`,
+		  };
+	  
+		  await utils?.transporter.sendMail(mailOptions);
 
 		if (
 			userOtpTableExists[0]?.user_exists > 0 &&
