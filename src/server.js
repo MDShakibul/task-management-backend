@@ -6,7 +6,7 @@ let server;
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-	errorconsole.log('Uncaught Exception:', error);
+	console.log('Uncaught Exception:', error);
 	process.exit(1);
 });
 
@@ -20,14 +20,14 @@ process.on('uncaughtException', (error) => {
 			console.log(`Application listening on port ${config.port}`);
 		});
 	} catch (error) {
-		errorconsole.log('Failed to start the server:', error);
+		console.log('Failed to start the server:', error);
 		process.exit(1);
 	}
 })();
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (error) => {
-	errorconsole.log('Unhandled Rejection:', error);
+	console.log('Unhandled Rejection:', error);
 	if (server) {
 		server.close(async () => {
 			console.log('Server is shutting down due to unhandled rejection');

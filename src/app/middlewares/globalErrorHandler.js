@@ -7,7 +7,7 @@ import handleCastError from '../../errors/handleCastError.js';
 const globalErrorHandler = (error, req, res, next) => {
 	/* config.env === 'development'
     ? console.log('globalErrorHandler ', error)
-    : errorconsole.log('globalErrorHandler ', error); */
+    : console.log('globalErrorHandler ', error); */
 	const endpoint = req.originalUrl; // Capture the API endpoint
 	const user_id = req?.user?.userId; // Capture the API endpoint
 	const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -16,7 +16,7 @@ const globalErrorHandler = (error, req, res, next) => {
 		? console.error(
 				`globalErrorHandler Api End Point:${endpoint} IP:${clientIp} ${user_id ? `User ID:${user_id}` : ''} ${error}`
 			)
-		: errorconsole.log(
+		: console.log(
 				`globalErrorHandler Api End Point:${endpoint} IP:${clientIp} ${user_id ? `User ID:${user_id}` : ''} ${error}`
 			);
 

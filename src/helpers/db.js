@@ -27,7 +27,7 @@ export async function connectToDatabase() {
 
 		return pool; // Return the pool for use elsewhere
 	} catch (error) {
-		errorconsole.log('Failed to connect to the database:', error);
+		console.log('Failed to connect to the database:', error);
 		process.exit(1); // Exit process if connection fails
 	}
 }
@@ -38,7 +38,7 @@ export async function closeDatabasePool() {
 			await pool.end(); // Closes all the connections in the pool
 			console.log('Database pool closed successfully');
 		} catch (error) {
-			errorconsole.log('Error while closing database pool:', error);
+			console.log('Error while closing database pool:', error);
 		}
 	} else {
 		logger.warn('No database pool to close');
